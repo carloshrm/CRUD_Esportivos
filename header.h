@@ -179,7 +179,10 @@ int excluirProduto(node **ini)
     procurarProduto(&anterior, &produto, entrada);
     if (produto)
     {
-        anterior->prox = anterior->prox->prox;
+        if (anterior)
+            anterior->prox = anterior->prox->prox;
+        else
+            (*ini) = (*ini)->prox;
         free(produto);
         return 1;
     }
@@ -222,9 +225,11 @@ int trocarPosicao(node **ini, int cod1, int cod2)
 
 void organizarTroca(node **lista)
 {
-    printf("\nDigite os codigos dos dois produtos a serem trocados de posição:  ");
-    int a, b;
-    scanf("%d %d", &a, &b);
+    printf("\nDigite os codigos dos dois produtos a serem trocados de posição:  \n1: ");
+    int a = atoi(lerEntrada());
+    printf("\n2: ");
+    int b = atoi(lerEntrada());
+
     if (a == b)
     {
         printf("Numeros iguais não são validos.");
@@ -239,7 +244,6 @@ void organizarTroca(node **lista)
         }
         else
         {
-
             printf("\n ! Não foram encontrados produtos com os codigos digitados.");
             return;
         }
