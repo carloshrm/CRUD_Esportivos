@@ -149,7 +149,7 @@ int editarProduto(node **ini)
 
     if (produto)
     {
-        printf("\nEncontrado: Codigo %d: Nome: %s, Valor Unitario: %.2f.", produto->item->codigo, produto->item->nome, produto->item->valorUnitario);
+        printf("\nEncontrado: %s.", produtoToString(*(produto->item)));
         printf("\n  Digite o novo nome: ");
         char *novoNome = lerEntrada();
         if (novoNome && strlen(novoNome) != 0)
@@ -165,13 +165,26 @@ int editarProduto(node **ini)
         printf("\nEdição concluida.");
     }
     else
-        printf("\nNão foi encontrado um produto com o codigo digitado.");
+        return -1;
 }
 
-void excluirProduto(node **ini)
+int excluirProduto(node **ini)
 {
     printf("\nDigite o código do produto a ser excluido: ");
-    int codigo = atoi(lerEntrada());
+    int entrada = atoi(lerEntrada());
+    if (entrada == 0)
+        return 0;
+
+    node *anterior = NULL, *produto = (*ini);
+    procurarProduto(&anterior, &produto, entrada);
+    if (produto)
+    {
+        anterior->prox = anterior->prox->prox;
+        free(produto);
+        return 1;
+    }
+    else
+        return -1;
 }
 
 int trocarPosicao(node **ini, int cod1, int cod2)
@@ -183,10 +196,7 @@ int trocarPosicao(node **ini, int cod1, int cod2)
     procurarProduto(&doisPtr, &doisNode, cod2);
 
     if (!umNode || !doisNode)
-    {
-        printf("\n ! Não foram encontrados items com os codigos digitados.");
         return 0;
-    }
     /*
     else
     {
@@ -229,7 +239,8 @@ void organizarTroca(node **lista)
         }
         else
         {
-            printf("\n ! A troca não foi realizada, tente novamente.");
+
+            printf("\n ! Não foram encontrados produtos com os codigos digitados.");
             return;
         }
     }
@@ -240,4 +251,13 @@ void mostrarMenu()
     printf("\n\n:: Loja de Artigos esportivos, Digite um numero e tecle enter para executar uma das opções: ");
     printf("\n\t 1 > Ver todos os produtos na lista.\n\t 2 > Trocar a ordem de dois produtos na lista.\n\t 3 > Cadastrar um novo produto. \n\t 4 > Editar um Produto.\n\t 5 > Excluir um produto.");
     printf("\n\t Qualquer outra tecla para encerrar.\n");
+}
+
+void liberarLista(node **lista)
+{
+    if ((*lista)->prox == NULL)
+        return;
+    node *p = *lista;
+    liberarLista(&(*lista)->prox);
+    free(p);
 }

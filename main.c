@@ -11,6 +11,7 @@ int main()
     {
         mostrarMenu();
         escolha = atoi(lerEntrada());
+        int resultado;
         switch (escolha)
         {
         case 1:
@@ -23,11 +24,25 @@ int main()
             adicionarProduto(&listaPromocional, lerNovoProduto());
             break;
         case 4:
-            editarProduto(&listaPromocional);
+            resultado = editarProduto(&listaPromocional);
+            if (resultado == -1)
+                printf("\nNão foi encontrado um produto com o codigo digitado.");
+            else if (resultado == 0)
+                printf("\nHouve um erro durante a edição, tente novamente.");
+            else
+                printf("\nEdição concluida.");
             break;
         case 5:
-            excluirProduto(&listaPromocional);
+            resultado = excluirProduto(&listaPromocional);
+            if (resultado == -1)
+                printf("\nNão foi encontrado um produto com o codigo digitado.");
+            else if (resultado == 0)
+                printf("\nCodigo invalido, tente novamente.");
+            else
+                printf("\nExclusão concluida.");
+            break;
         default:
+            liberarLista(&listaPromocional);
             escolha = 0;
             break;
         }
